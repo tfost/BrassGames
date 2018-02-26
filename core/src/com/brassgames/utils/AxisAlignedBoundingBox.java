@@ -28,4 +28,13 @@ public class AxisAlignedBoundingBox {
 		}
 		return true;
 	}
+	
+	public Vector2 getCenter() {
+		return this.center;
+		
+	}
+	
+	public void setCenter(Vector2 center) {
+		this.center = center;
+	}
 }

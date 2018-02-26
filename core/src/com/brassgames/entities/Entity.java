@@ -1,31 +1,27 @@
 package com.brassgames.entities;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.brassgames.utils.AxisAlignedBoundingBox;
+import com.brassgames.utils.Constants;
+import com.brassgames.utils.KeyboardListener;
+
 public abstract class Entity {
-	private int x;
-	private int y;
+	
+	private AxisAlignedBoundingBox aabb;
+	
 	protected boolean isDead;
 	
-	public Entity() {
-		this.x = 0;
-		this.y = 0;
+	public Entity(float x, float y) {
+		this.aabb = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH, Constants.PLAYER_HEIGHT);
 		this.isDead = false;
 	}
 	
-	public int getX() {
-		return x;
+	protected AxisAlignedBoundingBox getAABB() {
+		return this.aabb;
 	}
+
 	
-	public void setX(int x) {
-		this.x = x;
-	}
+	public abstract void update(long delta, KeyboardListener keyboard);
 	
-	public int getY() {
-		return y;
-	}
-	public void setY(int y) {
-		this.y = y;
-	}
-	
-	public abstract void update(long deltaT);
-	public abstract void render();
+	public abstract void render(SpriteBatch batch);
 }
