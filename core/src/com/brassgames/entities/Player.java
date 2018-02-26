@@ -1,4 +1,4 @@
-package entities;
+package com.brassgames.entities;
 
 public class Player extends Entity {
 	// TODO list of points & method for looping?

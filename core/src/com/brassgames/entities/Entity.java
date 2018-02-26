@@ -1,4 +1,4 @@
-package entities;
+package com.brassgames.entities;
 
 public abstract class Entity {
 	private int x;
