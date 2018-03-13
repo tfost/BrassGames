@@ -16,54 +16,52 @@ public class Player extends Entity {
 	private float dy;
 	private Texture img;
 	private boolean isJumping;
+	private boolean isFalling;
+	private boolean canJumpAgain;
+	private PlayerState state;
+	
+	
+	private int jumpTimer = 0; // number of frames this character will jump for.
+	private  int MAX_JUMP_TIME_TIMER = 5;
 			
 	public Player() {
 		super(250, 0);
 		this.dx = 0;
 		this.dy = 0;
 		this.img = new Texture(Constants.PLAYER_TEXTURE);
-		this.isJumping = false;
-	}
-	
-	
-	private void jump() {
-		if (!this.isJumping) {
-			this.isJumping = true;
-			dy = Constants.PLAYER_JUMP_VEL;
-		}
 		
+		this.state = new PlayerOnGroundState();
 	}
+	
+	
 	
 	/**
 	 * Sets variables to handle input, assuming perfect timesteps. 
 	 * @param keyboard the Keyboard listener
 	 */
 	private void handleInput(KeyboardListener keyboard) {
+		
 		if (keyboard.isKeyPressed(Input.Keys.A)) {
-			this.dx = -Constants.PLAYER_WALK_SPEED;
+			this.setDx(this.getDx() - Constants.PLAYER_ACCELERATION);
 		} else if (keyboard.isKeyPressed(Input.Keys.D)) {
-			this.dx = Constants.PLAYER_WALK_SPEED;
+			this.setDx(this.getDx() + Constants.PLAYER_ACCELERATION);
+
 		} else {
 			this.dx = 0;
 		}
-		if (keyboard.isKeyJustPressed(Input.Keys.SPACE)) {
-			jump();
-		}
+	
+		
 	}
 	
 	
-	private void doPhysics(long delta) {
+	
+	
+	private void doPhysics(float delta) {
 		//TODO: https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php
-		if (this.isJumping) {
-			dy -= 2;
-			if (this.getAABB().getCenter().y  + dy < 0) {
-				Vector2 newCenter = new Vector2();
-				newCenter.x = this.getAABB().getCenter().x;
-				this.getAABB().setCenter(newCenter);
-				this.isJumping = false;
-				this.dy = 0;
-			}
-		}
+		
+		//apply gravity. 
+		
+		
 		
 		Vector2 vel = new Vector2();
 		vel.x = this.dx;
@@ -73,8 +71,11 @@ public class Player extends Entity {
 	}
 	
 	@Override
-	public void update(long delta, KeyboardListener keyboard) {
+	public void update(float delta, KeyboardListener keyboard) {
 		this.handleInput(keyboard);
+		this.state.handleInput(delta, this, keyboard);
+
+		this.state.update(delta, this);
 		this.doPhysics(delta);	
 		
 	}
@@ -84,12 +85,60 @@ public class Player extends Entity {
 		batch.draw(img, this.getAABB().getCenter().x, this.getAABB().getCenter().y);
 	}
 	
-	public Ghost giveUpTheGhost() {
+	public Ghost toGhost() {
 		return null;
 	}
 	
 	public boolean isDead() {
 		return this.isDead;
 	}
+	
+	public void setState(PlayerState state) {
+		this.state = state;
+		state.enter(this);
+	}
 
+
+	/**
+	 * @return the dx
+	 */
+	public float getDx() {
+		return dx;
+	}
+
+
+	/**
+	 * @param dx the dx to set
+	 */
+	public void setDx(float dx) {
+		if (dx < -Constants.PLAYER_WALK_SPEED) {
+			dx = -Constants.PLAYER_WALK_SPEED;
+		}
+		if (dx > Constants.PLAYER_WALK_SPEED) {
+			dx = Constants.PLAYER_WALK_SPEED;
+		}
+		this.dx = dx;
+		
+	}
+
+
+	/**
+	 * @return the dy
+	 */
+	public float getDy() {
+		return dy;
+	}
+
+
+	/**
+	 * @param dy the dy to set
+	 */
+	public void setDy(float dy) {
+		if (dy < Constants.TERMINAL_VELOCITY) {
+			dy = Constants.TERMINAL_VELOCITY;
+		}
+		this.dy = dy;
+		
+	}
+	
 }

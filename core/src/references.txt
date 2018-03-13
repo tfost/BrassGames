@@ -1,0 +1,5 @@
+https://gamedevelopment.tutsplus.com/tutorials/basic-2d-platformer-physics-part-1--cms-25799
+
+http://higherorderfun.com/blog/2012/05/20/the-guide-to-implementing-2d-platformers/
+
+https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php

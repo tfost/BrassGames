@@ -12,7 +12,7 @@ public class Ghost extends Entity {
 	// TODO list of points & method for looping?
 
 	@Override
-	public void update(long delta, KeyboardListener keyboard) {
+	public void update(float delta, KeyboardListener keyboard) {
 		// TODO Auto-generated method stub
 		
 	}

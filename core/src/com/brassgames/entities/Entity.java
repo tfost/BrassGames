@@ -21,7 +21,7 @@ public abstract class Entity {
 	}
 
 	
-	public abstract void update(long delta, KeyboardListener keyboard);
+	public abstract void update(float delta, KeyboardListener keyboard);
 	
 	public abstract void render(SpriteBatch batch);
 }

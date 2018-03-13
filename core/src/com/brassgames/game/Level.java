@@ -20,7 +20,7 @@ public class Level {
 		this.player = new Player();
 	}
 	
-	public void update(long delta) {
+	public void update(float delta) {
 		keyboard.poll();
 		player.update(delta, keyboard);
 	}
