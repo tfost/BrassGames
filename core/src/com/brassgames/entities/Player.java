@@ -1,36 +1,39 @@
 package com.brassgames.entities;
 
-import com.badlogic.gdx.Gdx;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
+import com.brassgames.utils.Position;
 
 public class Player extends Entity {
-	// TODO list of points & method for looping?
 	
 	private float dx;
 	private float dy;
 	private Texture img;
-	private boolean isJumping;
-	private boolean isFalling;
-	private boolean canJumpAgain;
 	private PlayerState state;
 	
+	//  Ghost Code
+	private float current;
+	private Map<Float, Position> positions;
 	
-	private int jumpTimer = 0; // number of frames this character will jump for.
-	private  int MAX_JUMP_TIME_TIMER = 5;
 			
-	public Player() {
-		super(250, 0);
+	public Player(float x, float y) {
+		super(x, y);
 		this.dx = 0;
 		this.dy = 0;
 		this.img = new Texture(Constants.PLAYER_TEXTURE);
 		
 		this.state = new PlayerOnGroundState();
+		
+		//  Ghost code
+		this.current = 0;
+		this.positions = new HashMap<Float, Position>();
 	}
 	
 	
@@ -76,8 +79,12 @@ public class Player extends Entity {
 		this.state.handleInput(delta, this, keyboard);
 
 		this.state.update(delta, this);
-		this.doPhysics(delta);	
+		this.doPhysics(delta);
 		
+		current += delta;
+		Position position = new Position(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
+		positions.put(current, position);
+				
 	}
 
 	@Override
@@ -86,7 +93,7 @@ public class Player extends Entity {
 	}
 	
 	public Ghost toGhost() {
-		return null;
+		return new Ghost(positions);
 	}
 	
 	public boolean isDead() {
