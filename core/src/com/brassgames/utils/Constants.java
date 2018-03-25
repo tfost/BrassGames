@@ -25,4 +25,5 @@ public class Constants {
 	
 	//World Constants
 	public static final float GRAVITY = -2;
+	public static final String GHOST_TEXTURE = "ghostythenoman.png";
 }

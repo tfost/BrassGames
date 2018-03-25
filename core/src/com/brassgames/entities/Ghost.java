@@ -18,10 +18,10 @@ public class Ghost extends Entity {
 	public Ghost(Map<Float, Position> positions) {
 		super(Constants.PLAYER_DEFAULT_X, Constants.PLAYER_DEFAULT_Y);	//  TODO fix this shit
 		this.current = 0;
-		this.img = new Texture(Constants.PLAYER_TEXTURE);
+		this.img = new Texture(Constants.GHOST_TEXTURE);
 		this.positions = new HashMap<Float, Position>(positions);
 		
-		System.out.println("map size " + positions.size());
+		System.out.print("map size " + positions.size());	//  TODO remove
 	}
 
 	@Override
@@ -36,6 +36,10 @@ public class Ghost extends Entity {
 	@Override
 	public void render(SpriteBatch batch) {
 		batch.draw(img, this.getAABB().getCenter().x, this.getAABB().getCenter().y);
+	}
+
+	public void resetPos() {
+		this.current = 0;		
 	}
 	
 

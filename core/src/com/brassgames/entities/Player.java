@@ -20,6 +20,7 @@ public class Player extends Entity {
 	
 	//  Ghost Code
 	private float current;
+	public int frames;
 	private Map<Float, Position> positions;
 	
 			
@@ -34,6 +35,7 @@ public class Player extends Entity {
 		//  Ghost code
 		this.current = 0;
 		this.positions = new HashMap<Float, Position>();
+		this.frames = 0;
 	}
 	
 	
@@ -81,10 +83,11 @@ public class Player extends Entity {
 		this.state.update(delta, this);
 		this.doPhysics(delta);
 		
+		//ghost code
 		current += delta;
 		Position position = new Position(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
 		positions.put(current, position);
-				
+		frames++;				
 	}
 
 	@Override
@@ -146,6 +149,21 @@ public class Player extends Entity {
 		}
 		this.dy = dy;
 		
+	}
+
+
+
+	public void kill() {
+		super.isDead = true;
+	}
+	
+	public Position getPosition() {
+		return new Position(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
+	}
+	
+	public boolean hasLanded() {
+		return this.state.getClass().equals(com.brassgames.entities.PlayerOnGroundState.class) ||
+				this.state.getClass().equals(com.brassgames.entities.PlayerMovingState.class);
 	}
 	
 }
