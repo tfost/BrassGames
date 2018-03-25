@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 
 import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
-import com.brassgames.utils.Position;
 
 public class Player extends Entity {
 	
@@ -22,7 +21,7 @@ public class Player extends Entity {
 	//TODO: Ghost Code
 	private float current;
 	public int frames;
-	private Map<Float, Position> positions;
+	private Map<Float, Vector2> positions;
 			
 	public Player(float x, float y) {
 		super(x, y);
@@ -34,7 +33,7 @@ public class Player extends Entity {
 		
 		//TODO: Ghost code
 		this.current = 0;
-		this.positions = new HashMap<Float, Position>();
+		this.positions = new HashMap<Float, Vector2>();
 		this.frames = 0;
 	}	
 	
@@ -74,8 +73,8 @@ public class Player extends Entity {
 		
 		//TODO: Ghost code
 		current += delta;
-		Position position = new Position(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
-		positions.put(current, position);
+		Vector2 pos = new Vector2(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
+		positions.put(current, pos);
 		frames++;
 	}
 
@@ -142,8 +141,8 @@ public class Player extends Entity {
 		super.isDead = true;
 	}
 	
-	public Position getPosition() {
-		return new Position(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
+	public Vector2 getPosition() {
+		return new Vector2(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
 	}
 	
 	public boolean hasLanded() {
