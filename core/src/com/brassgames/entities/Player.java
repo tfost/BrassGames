@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+
 import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
 import com.brassgames.utils.Position;
@@ -18,11 +19,10 @@ public class Player extends Entity {
 	private Texture img;
 	private PlayerState state;
 	
-	//  Ghost Code
+	//TODO: Ghost Code
 	private float current;
 	public int frames;
 	private Map<Float, Position> positions;
-	
 			
 	public Player(float x, float y) {
 		super(x, y);
@@ -32,42 +32,31 @@ public class Player extends Entity {
 		
 		this.state = new PlayerOnGroundState();
 		
-		//  Ghost code
+		//TODO: Ghost code
 		this.current = 0;
 		this.positions = new HashMap<Float, Position>();
 		this.frames = 0;
-	}
-	
-	
+	}	
 	
 	/**
 	 * Sets variables to handle input, assuming perfect timesteps. 
 	 * @param keyboard the Keyboard listener
 	 */
 	private void handleInput(KeyboardListener keyboard) {
-		
 		if (keyboard.isKeyPressed(Input.Keys.A)) {
 			this.setDx(this.getDx() - Constants.PLAYER_ACCELERATION);
 		} else if (keyboard.isKeyPressed(Input.Keys.D)) {
 			this.setDx(this.getDx() + Constants.PLAYER_ACCELERATION);
-
 		} else {
 			this.dx = 0;
 		}
-	
-		
 	}
 	
 	
 	
-	
+	//TODO: https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php
+	//TODO: apply gravity.
 	private void doPhysics(float delta) {
-		//TODO: https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php
-		
-		//apply gravity. 
-		
-		
-		
 		Vector2 vel = new Vector2();
 		vel.x = this.dx;
 		vel.y = this.dy;
@@ -83,11 +72,11 @@ public class Player extends Entity {
 		this.state.update(delta, this);
 		this.doPhysics(delta);
 		
-		//ghost code
+		//TODO: Ghost code
 		current += delta;
 		Position position = new Position(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
 		positions.put(current, position);
-		frames++;				
+		frames++;
 	}
 
 	@Override
@@ -100,7 +89,7 @@ public class Player extends Entity {
 	}
 	
 	public boolean isDead() {
-		return this.isDead;
+		return super.isDead;
 	}
 	
 	public void setState(PlayerState state) {
@@ -108,14 +97,12 @@ public class Player extends Entity {
 		state.enter(this);
 	}
 
-
 	/**
 	 * @return the dx
 	 */
 	public float getDx() {
 		return dx;
 	}
-
 
 	/**
 	 * @param dx the dx to set
@@ -128,7 +115,6 @@ public class Player extends Entity {
 			dx = Constants.PLAYER_WALK_SPEED;
 		}
 		this.dx = dx;
-		
 	}
 
 
@@ -148,7 +134,6 @@ public class Player extends Entity {
 			dy = Constants.TERMINAL_VELOCITY;
 		}
 		this.dy = dy;
-		
 	}
 
 
@@ -165,5 +150,4 @@ public class Player extends Entity {
 		return this.state.getClass().equals(com.brassgames.entities.PlayerOnGroundState.class) ||
 				this.state.getClass().equals(com.brassgames.entities.PlayerMovingState.class);
 	}
-	
 }

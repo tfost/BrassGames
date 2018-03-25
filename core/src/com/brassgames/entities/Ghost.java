@@ -10,6 +10,7 @@ import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
 import com.brassgames.utils.Position;
 
+//TODO: Ghost code
 public class Ghost extends Entity {
 	private Texture img;
 	private Map<Float, Position> positions;
