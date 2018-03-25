@@ -2,8 +2,8 @@ package com.brassgames.entities;
 
 import com.brassgames.utils.KeyboardListener;
 
+@SuppressWarnings("unused")
 public class PlayerMovingState implements PlayerState{
-	
 	private boolean jumping;
 	private boolean falling;	
 	

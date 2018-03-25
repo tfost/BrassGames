@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.brassgames.entities.Ghost;
 import com.brassgames.entities.Player;
 import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
-import com.brassgames.utils.Position;
 
 /**
  * A Level is a fully playable instance of an environment in which the player can explore. 
@@ -34,7 +32,7 @@ public class Level {
 		keyboard.poll();
 		if(keyboard.isKeyJustPressed(Input.Keys.K)) {
 			player.kill();
-		} if (player.isDead() && player.hasLanded()) {
+		} if (player.isDead() && player.hasLanded()) {	//TODO: define this better
 			ghosts.add(player.toGhost());
 			System.out.println(" / " + player.frames);
 			for(Ghost g : ghosts) {
