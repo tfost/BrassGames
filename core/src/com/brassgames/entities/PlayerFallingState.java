@@ -2,6 +2,8 @@ package com.brassgames.entities;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.brassgames.blocks.Block;
+import com.brassgames.game.World;
 import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
 
@@ -18,20 +20,22 @@ public class PlayerFallingState implements PlayerState {
 	}
 
 	@Override
-	public void update(float delta, Player player) {
+	public void update(float delta, Player player, World world) {
 		// TODO Auto-generated method stub
-		float dy = player.getDy() + Constants.GRAVITY;
-		if (player.getAABB().getCenter().y + dy < 0) {
-			player.getAABB().setCenter(new Vector2(player.getAABB().getCenter().x, 0));
-			dy = 0;
+		player.setDy(player.getDy() + Constants.GRAVITY);
+		player.doWallSensorPhysics(delta);
+		Block collidedBlock = player.getDownCollidedBlock(world);
+		if (collidedBlock != null) {
+			float top = collidedBlock.getAABB().getCenter().y + collidedBlock.getAABB().getRadii().y;
+			player.getAABB().setCenter(new Vector2(player.getAABB().getCenter().x, top));
+			player.setDy(0);
+			
 			if (subsequentState == null) {
 				player.setState(new PlayerOnGroundState());
 			} else {
 				player.setState(subsequentState);
 			}
-		} else {
-			player.setDy(dy);
-		}
+		} 
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public class Level {
 	
 	public Level() {
 		this.keyboard = new KeyboardListener();
-
+		this.world = new World();
 		this.player = new Player(Constants.PLAYER_DEFAULT_X, Constants.PLAYER_DEFAULT_Y);
 		this.ghosts = new ArrayList<Ghost>();
 	}
@@ -43,9 +43,9 @@ public class Level {
 			}
 			player = new Player(Constants.PLAYER_DEFAULT_X, Constants.PLAYER_DEFAULT_Y);
 		}
-		player.update(delta, keyboard);
+		player.update(delta, keyboard, world);
 		for(Ghost g : ghosts) {
-			g.update(delta, keyboard);
+			g.update(delta, keyboard, world);
 		}
 	}
 	

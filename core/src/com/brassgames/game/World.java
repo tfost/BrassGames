@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.brassgames.blocks.Block;
+import com.brassgames.utils.AxisAlignedBoundingBox;
 
 /**
  * A World is a representation of the game world in which the player exists. It contains
@@ -41,6 +42,19 @@ public class World {
 		}
 	}
 	
+	/**
+	 * Finds a block within the World that collides with a given AABB, if one exist.s
+	 * @param aabb the aabb to check for collisions with.
+	 * @return null if no block exists, otherwise the block that collides.
+	 */
+	public Block getCollidingBlock(AxisAlignedBoundingBox aabb) {
+		for (Block b : blocks) {
+			if (aabb.overlaps(b.getAABB())) {
+				return b;
+			}
+		}
+		return null;
+	}
 	
 	
 }

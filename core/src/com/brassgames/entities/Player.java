@@ -7,8 +7,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.brassgames.blocks.Block;
+import com.brassgames.game.World;
 import com.brassgames.utils.AxisAlignedBoundingBox;
-
 import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
 
@@ -21,10 +22,11 @@ public class Player extends Entity {
 	//Determines what state the player is in. 
 	private PlayerState state;
 	
-	private AxisAlignedBoundingBox aboveSensor;
-	private AxisAlignedBoundingBox belowSensor;
-	private AxisAlignedBoundingBox leftSensor;
-	private AxisAlignedBoundingBox rightSensor;
+	// Wall sensors, to determine if we are moving into a wall or not. 
+	protected AxisAlignedBoundingBox wallAboveSensor;
+	protected AxisAlignedBoundingBox wallBelowSensor;
+	protected AxisAlignedBoundingBox wallLeftSensor;
+	protected AxisAlignedBoundingBox wallRightSensor;
 	
 	//Graphics Variables
 	private Texture img;
@@ -45,10 +47,14 @@ public class Player extends Entity {
 		
 		this.state = new PlayerOnGroundState();
 		
-		//TODO: Ghost code
+		//Wall Sensor Initialization
+		this.wallBelowSensor = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH + 1, Constants.PLAYER_HEIGHT + 1); //TODO: NO MAGIC NUMBERS
+		
+		//Ghost initialization
 		this.current = 0;
 		this.positions = new HashMap<Float, Vector2>();
 		this.frames = 0;
+		
 	}	
 	
 	/**
@@ -63,21 +69,55 @@ public class Player extends Entity {
 		} else {
 			this.dx = 0;
 		}
+	}
 	
+	/**
+	 * Determines if there is a block beneath the player that is colliding with its wall sensors.
+	 * @return the Block beneath the player, if there is one. Otherwise, returns null
+	 */
+	protected Block getDownCollidedBlock(World world) {
+		return world.getCollidingBlock(this.wallBelowSensor);
+	}
+	
+	/**
+	 * @see getDownCollidedBlock
+	 */
+	protected Block getUpCollidedBlock(World world) {
+		return world.getCollidingBlock(this.wallAboveSensor);
+	}
+	
+	/**
+	 * @see getDownCollidedBlock
+	 */
+	protected Block getLeftCollidedBlock(World world) {
+		return world.getCollidingBlock(this.wallLeftSensor);
+	}
+	
+	/**
+	 * @see getDownCollidedBlock
+	 */
+	protected Block getRightCollidedBlock(World world) {
+		return world.getCollidingBlock(this.wallRightSensor);
+	}
+	
+	/**
+	 * Does doWall
+	 * @param delta
+	 */
+	protected void doWallSensorPhysics(float delta) {
+		Vector2 vel = new Vector2(this.dx, this.dy);
+
+		this.wallAboveSensor.setCenter(this.wallAboveSensor.getCenter().add(vel));
+		this.wallBelowSensor.setCenter(this.wallBelowSensor.getCenter().add(vel));
+		this.wallLeftSensor.setCenter(this.wallLeftSensor.getCenter().add(vel));
+		this.wallRightSensor.setCenter(this.wallRightSensor.getCenter().add(vel));
 
 	}
 	
-	//Returns the y position on top of a tile that we should be if we collide with a tile, or
-	//NaN otherwise. 
-	private float hasGround(Vector2 oldPos, Vector2 position, Vector2 vel) {
-		Vector2 center = this.getAABB().getCenter();
-		Vector2 bottomLeft = center.sub(this.getAABB().getRadii()).add(new Vector2(1, -1)); // one pixel on either side inside and below the AABB.
-		Vector2 bottomRight = center.sub(this.getAABB().getRadii()).add(new Vector2(-1, -1));
-		
-	}
-	
-	//TODO: https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php
-	//TODO: apply gravity.
+	/**
+	 * Runs physics simulation on the players master AABB. 
+	 * @param delta
+	 */
 	private void doPhysics(float delta) {
 
 		Vector2 vel = new Vector2();
@@ -87,21 +127,34 @@ public class Player extends Entity {
 		this.getAABB().setCenter(this.getAABB().getCenter().add(vel));
 	}
 	
+	
+	
 	@Override
-	public void update(float delta, KeyboardListener keyboard) {
+	public void update(float delta, KeyboardListener keyboard, World world) {
+		this.updateWallSensors();
 		this.handleInput(keyboard);
 		this.state.handleInput(delta, this, keyboard);
 
-		this.state.update(delta, this);
+		this.state.update(delta, this, world);
 		this.doPhysics(delta);
 		
-		//TODO: Ghost code
+
+		updateGhosts(delta);
+	}
+	
+	private void updateWallSensors() {
+		float halfWidth = this.getAABB().getRadii().x;
+		float halfHeight = this.getAABB().getRadii().y;
+		this.wallBelowSensor.setCenter(this.getAABB().getCenter().add(new Vector2(0, -halfHeight)));
+	}
+	
+	private void updateGhosts(float delta) {
 		current += delta;
 		Vector2 pos = new Vector2(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
 		positions.put(current, pos);
 		frames++;
 	}
-
+	
 	@Override
 	public void render(SpriteBatch batch) {
 		batch.draw(img, this.getAABB().getCenter().x, this.getAABB().getCenter().y);
@@ -117,6 +170,7 @@ public class Player extends Entity {
 	
 	public void setState(PlayerState state) {
 		this.state = state;
+		this.updateWallSensors();
 		state.enter(this);
 	}
 
@@ -165,11 +219,10 @@ public class Player extends Entity {
 	}
 	
 	public Vector2 getPosition() {
-		return new Vector2(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
+		return this.getAABB().getCenter();
 	}
 	
 	public boolean hasLanded() {
-		return this.state.getClass().equals(com.brassgames.entities.PlayerOnGroundState.class) ||
-				this.state.getClass().equals(com.brassgames.entities.PlayerMovingState.class);
+		return this.state.getClass().equals(com.brassgames.entities.PlayerOnGroundState.class);
 	}
 }

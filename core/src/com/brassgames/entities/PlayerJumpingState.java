@@ -2,6 +2,7 @@ package com.brassgames.entities;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.brassgames.game.World;
 import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
 
@@ -24,7 +25,7 @@ public class PlayerJumpingState implements PlayerState{
 	}
 
 	@Override
-	public void update(float delta, Player player) {
+	public void update(float delta, Player player, World world) {
 		//If we get here, we are still jumping!
 		if (jumpTimer <= MAX_JUMP_FRAMES) {
 			float proportionCompleted = (float) jumpTimer / (float) MAX_JUMP_FRAMES;

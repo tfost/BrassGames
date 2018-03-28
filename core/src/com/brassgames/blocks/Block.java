@@ -32,4 +32,8 @@ public class Block {
 		batch.draw(this.texture, this.aabb.getCenter().x - width / 2, this.aabb.getCenter().y - height / 2, width, height);
 	}
 	
+	public AxisAlignedBoundingBox getAABB() {
+		return this.aabb;
+	}
+	
 }

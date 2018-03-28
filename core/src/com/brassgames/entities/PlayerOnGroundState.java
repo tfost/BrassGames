@@ -1,6 +1,7 @@
 package com.brassgames.entities;
 
 import com.badlogic.gdx.Input;
+import com.brassgames.game.World;
 import com.brassgames.utils.KeyboardListener;
 
 public class PlayerOnGroundState implements PlayerState{
@@ -14,7 +15,7 @@ public class PlayerOnGroundState implements PlayerState{
 	}
 
 	@Override
-	public void update(float delta, Player player) {
+	public void update(float delta, Player player, World world) {
 		
 		
 	}
