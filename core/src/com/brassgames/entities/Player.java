@@ -1,20 +1,22 @@
 package com.brassgames.entities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.brassgames.utils.AxisAlignedBoundingBox;
+
 import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
 
 public class Player extends Entity {
-	// TODO list of points & method for looping?
 	
 	//Physics variables that apply to all states of a player
 	private float dx;
 	private float dy;
-
 	
 	//Determines what state the player is in. 
 	private PlayerState state;
@@ -27,31 +29,37 @@ public class Player extends Entity {
 	//Graphics Variables
 	private Texture img;
 	
+	//Ghost Creation Variables
+	private float current;
+	public int frames;
+	private Map<Float, Vector2> positions;
+			
 	/**
 	 * Creates a new Instance of a Player
 	 */
-	public Player() {
-		super(250, 0);
+	public Player(float x, float y) {
+		super(x, y);
 		this.dx = 0;
 		this.dy = 0;
 		this.img = new Texture(Constants.PLAYER_TEXTURE);
 		
 		this.state = new PlayerOnGroundState();
-	}
-	
-	
+		
+		//TODO: Ghost code
+		this.current = 0;
+		this.positions = new HashMap<Float, Vector2>();
+		this.frames = 0;
+	}	
 	
 	/**
 	 * Sets variables to handle input, assuming perfect timesteps. 
 	 * @param keyboard the Keyboard listener
 	 */
 	private void handleInput(KeyboardListener keyboard) {
-		
 		if (keyboard.isKeyPressed(Input.Keys.A)) {
 			this.setDx(this.getDx() - Constants.PLAYER_ACCELERATION);
 		} else if (keyboard.isKeyPressed(Input.Keys.D)) {
 			this.setDx(this.getDx() + Constants.PLAYER_ACCELERATION);
-
 		} else {
 			this.dx = 0;
 		}
@@ -68,10 +76,10 @@ public class Player extends Entity {
 		
 	}
 	
-	
+	//TODO: https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php
+	//TODO: apply gravity.
 	private void doPhysics(float delta) {
-		//TODO: https://www.gamasutra.com/blogs/DanielFineberg/20150825/244650/Designing_a_Jump_in_Unity.php
-		
+
 		Vector2 vel = new Vector2();
 		vel.x = this.dx;
 		vel.y = this.dy;
@@ -85,8 +93,13 @@ public class Player extends Entity {
 		this.state.handleInput(delta, this, keyboard);
 
 		this.state.update(delta, this);
-		this.doPhysics(delta);	
+		this.doPhysics(delta);
 		
+		//TODO: Ghost code
+		current += delta;
+		Vector2 pos = new Vector2(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
+		positions.put(current, pos);
+		frames++;
 	}
 
 	@Override
@@ -95,11 +108,11 @@ public class Player extends Entity {
 	}
 	
 	public Ghost toGhost() {
-		return null;
+		return new Ghost(positions);
 	}
 	
 	public boolean isDead() {
-		return this.isDead;
+		return super.isDead;
 	}
 	
 	public void setState(PlayerState state) {
@@ -107,14 +120,12 @@ public class Player extends Entity {
 		state.enter(this);
 	}
 
-
 	/**
 	 * @return the dx
 	 */
 	public float getDx() {
 		return dx;
 	}
-
 
 	/**
 	 * @param dx the dx to set
@@ -127,7 +138,6 @@ public class Player extends Entity {
 			dx = Constants.PLAYER_WALK_SPEED;
 		}
 		this.dx = dx;
-		
 	}
 
 
@@ -147,7 +157,19 @@ public class Player extends Entity {
 			dy = Constants.TERMINAL_VELOCITY;
 		}
 		this.dy = dy;
-		
+	}
+
+
+	public void kill() {
+		super.isDead = true;
 	}
 	
+	public Vector2 getPosition() {
+		return new Vector2(this.getAABB().getCenter().x, this.getAABB().getCenter().y);
+	}
+	
+	public boolean hasLanded() {
+		return this.state.getClass().equals(com.brassgames.entities.PlayerOnGroundState.class) ||
+				this.state.getClass().equals(com.brassgames.entities.PlayerMovingState.class);
+	}
 }

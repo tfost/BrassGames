@@ -10,6 +10,8 @@ public class Constants {
 	// Player Display Constants
 	public static final int PLAYER_WIDTH = 16;
 	public static final int PLAYER_HEIGHT = 32;
+	public static final float PLAYER_DEFAULT_X = 250;
+	public static final float PLAYER_DEFAULT_Y = 0;
 	public static final String PLAYER_TEXTURE = "supahman.png";
 
 	//Player Physics Constants
@@ -23,4 +25,5 @@ public class Constants {
 	
 	//World Constants
 	public static final float GRAVITY = -2;
+	public static final String GHOST_TEXTURE = "ghostythenoman.png";
 }

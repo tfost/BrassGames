@@ -1,7 +1,6 @@
 package com.brassgames.entities;
 
 import com.badlogic.gdx.Input;
-import com.brassgames.utils.Constants;
 import com.brassgames.utils.KeyboardListener;
 
 public class PlayerOnGroundState implements PlayerState{
