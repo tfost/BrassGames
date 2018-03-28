@@ -8,7 +8,7 @@ public class PlayerOnGroundState implements PlayerState{
 
 	@Override
 	public void handleInput(float delta, Player player, KeyboardListener keyboard) {
-		if (keyboard.isKeyJustPressed(Input.Keys.SPACE)) {
+		if (keyboard.isKeyJustPressed(Input.Keys.SPACE) || keyboard.isKeyPressed(Input.Keys.SPACE)) {
 			player.setState(new PlayerJumpingState());
 			
 		} 

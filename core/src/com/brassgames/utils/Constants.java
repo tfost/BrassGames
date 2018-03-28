@@ -16,7 +16,7 @@ public class Constants {
 	public static final float PLAYER_MASS = 1.0f;
 	public static final float PLAYER_JUMP_VEL = 20.f;
 	public static final float PLAYER_WALK_SPEED = 9.0f;
-	private static final int FRAMES_TO_ACCELERATE = 5;
+	private static final int FRAMES_TO_ACCELERATE = 3;
 	public static final float PLAYER_ACCELERATION = PLAYER_WALK_SPEED / FRAMES_TO_ACCELERATE; //amount to accellerate per frame such that we reach player_walk_speed within frames_to_accellerate.
 	public static final float TERMINAL_VELOCITY = -25.f;
 

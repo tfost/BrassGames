@@ -13,6 +13,7 @@ public class AxisAlignedBoundingBox {
 	private Vector2 center; // x, y positions of the center of this bouding box.
 	private Vector2 radii; // width/2, height/2
 	
+	//creates a new AABB from center x and y, width, and height.
 	public AxisAlignedBoundingBox(float x, float y, float width, float height) {
 		this.center = new Vector2(x, y);
 		this.radii = new Vector2(width, height);
@@ -32,6 +33,10 @@ public class AxisAlignedBoundingBox {
 	public Vector2 getCenter() {
 		return this.center;
 		
+	}
+	
+	public Vector2 getRadii() {
+		return this.radii;
 	}
 	
 	public void setCenter(Vector2 center) {

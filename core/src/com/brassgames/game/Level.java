@@ -13,11 +13,14 @@ public class Level {
 	
 	private Player player;
 	
+	private World world;
+	
 	private KeyboardListener keyboard;
 	
 	public Level() {
 		this.keyboard = new KeyboardListener();
 		this.player = new Player();
+		this.world = new World();
 	}
 	
 	public void update(float delta) {
@@ -27,6 +30,7 @@ public class Level {
 	
 	public void render(SpriteBatch batch) {
 		this.player.render(batch);
+		this.world.render(batch);
 	}
 	
 }

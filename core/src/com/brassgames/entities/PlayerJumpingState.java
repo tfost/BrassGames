@@ -11,7 +11,7 @@ public class PlayerJumpingState implements PlayerState{
 	private short MAX_JUMP_FRAMES;
 	
 	public PlayerJumpingState() {
-		MAX_JUMP_FRAMES = 30;
+		MAX_JUMP_FRAMES = 20;
 		jumpTimer = 0;
 	}
 	
