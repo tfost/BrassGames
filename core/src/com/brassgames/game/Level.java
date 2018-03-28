@@ -53,6 +53,7 @@ public class Level {
 		this.player.render(batch);
 		this.world.render(batch);
 		for(Ghost g : ghosts) {
+			g.render(batch);
 		}
 	}
 }
