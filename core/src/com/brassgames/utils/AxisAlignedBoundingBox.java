@@ -16,7 +16,7 @@ public class AxisAlignedBoundingBox {
 	//creates a new AABB from center x and y, width, and height.
 	public AxisAlignedBoundingBox(float x, float y, float width, float height) {
 		this.center = new Vector2(x, y);
-		this.radii = new Vector2(width, height);
+		this.radii = new Vector2(width / 2.f, height / 2.f);
 	}
 	
 	//Returns if this AABB collides with another AABB.

@@ -29,7 +29,7 @@ public class PlayerFallingState implements PlayerState {
 			float top = collidedBlock.getAABB().getCenter().y + collidedBlock.getAABB().getRadii().y;
 			player.getAABB().setCenter(new Vector2(player.getAABB().getCenter().x, top));
 			player.setDy(0);
-			
+			System.out.println("Collided downwards");
 			if (subsequentState == null) {
 				player.setState(new PlayerOnGroundState());
 			} else {

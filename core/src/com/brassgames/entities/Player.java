@@ -48,7 +48,12 @@ public class Player extends Entity {
 		this.state = new PlayerOnGroundState();
 		
 		//Wall Sensor Initialization
-		this.wallBelowSensor = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH + 1, Constants.PLAYER_HEIGHT + 1); //TODO: NO MAGIC NUMBERS
+		//Starts centereed around the character, but is fixed to be int he proper spot after UpdateWallSensors is called. 
+		this.wallBelowSensor = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH + 2, 2); //TODO: NO MAGIC NUMBERS
+		this.wallAboveSensor = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH + 2, 2);
+		this.wallRightSensor = new AxisAlignedBoundingBox(x, y, 2, Constants.PLAYER_HEIGHT + 2);
+		this.wallLeftSensor = new AxisAlignedBoundingBox(x, y, 2, Constants.PLAYER_HEIGHT + 2);
+	    this.updateWallSensors(); //Set to right position
 		
 		//Ghost initialization
 		this.current = 0;
@@ -107,10 +112,10 @@ public class Player extends Entity {
 	protected void doWallSensorPhysics(float delta) {
 		Vector2 vel = new Vector2(this.dx, this.dy);
 
-		this.wallAboveSensor.setCenter(this.wallAboveSensor.getCenter().add(vel));
+		//this.wallAboveSensor.setCenter(this.wallAboveSensor.getCenter().add(vel));
 		this.wallBelowSensor.setCenter(this.wallBelowSensor.getCenter().add(vel));
-		this.wallLeftSensor.setCenter(this.wallLeftSensor.getCenter().add(vel));
-		this.wallRightSensor.setCenter(this.wallRightSensor.getCenter().add(vel));
+		//this.wallLeftSensor.setCenter(this.wallLeftSensor.getCenter().add(vel));
+		//this.wallRightSensor.setCenter(this.wallRightSensor.getCenter().add(vel));
 
 	}
 	
@@ -143,9 +148,13 @@ public class Player extends Entity {
 	}
 	
 	private void updateWallSensors() {
+		
 		float halfWidth = this.getAABB().getRadii().x;
 		float halfHeight = this.getAABB().getRadii().y;
 		this.wallBelowSensor.setCenter(this.getAABB().getCenter().add(new Vector2(0, -halfHeight)));
+		this.wallAboveSensor.setCenter(this.getAABB().getCenter().add(new Vector2(0, halfHeight)));
+		this.wallLeftSensor.setCenter(this.getAABB().getCenter().add(new Vector2(-halfWidth, 0)));
+		this.wallRightSensor.setCenter(this.getAABB().getCenter().add(new Vector2(halfWidth, 0 )));
 	}
 	
 	private void updateGhosts(float delta) {
