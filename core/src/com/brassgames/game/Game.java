@@ -25,18 +25,29 @@ public class Game extends ApplicationAdapter {
 		level = new Level();
 		next_tick = System.currentTimeMillis();
 		loops = 0;
+		startSecond = System.currentTimeMillis();
 	}
-
+	
+	private int framesPerSecond = 0;
+	private long startSecond = 0;
+	
 	@Override
 	//Game loop, renders in a Constant game speed with maximum FPS. 
 	public void render () { //while game is running:
-		
+		framesPerSecond++;
+		long currTime = System.currentTimeMillis();
+		if (currTime - startSecond > 1000) {
+			System.out.println(framesPerSecond + " fps");
+			framesPerSecond = 0;
+		}
 		loops = 0;
 		while (System.currentTimeMillis() > next_tick && loops < MAX_FRAMESKIP) {
 			level.update(TIME_PER_FRAME);
 			next_tick += SKIP_TICKS;
 			loops++;
 		}
+		loops = 0;
+		next_tick = System.currentTimeMillis();
 		
 		// render
 		Gdx.gl.glClearColor(1, 0, 0, 1);

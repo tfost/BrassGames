@@ -18,8 +18,8 @@ public class Block {
 	
 	//Creates a new Block from two coordinate pairs, the top left and the bottom right corners.
 	public Block(int x1, int y1, int x2, int y2) {
-		if (this.texture == null) {
-			this.texture = new Texture("block.png");
+		if (texture == null) {
+			texture = new Texture("block.png");
 		}
 		width = Math.abs(x2 - x1);
 		height = Math.abs(y2 - y1);
@@ -29,7 +29,7 @@ public class Block {
 	}
 	
 	public void render(SpriteBatch batch) {
-		batch.draw(this.texture, this.aabb.getCenter().x - width / 2, this.aabb.getCenter().y - height / 2, width, height);
+		batch.draw(texture, this.aabb.getCenter().x - width / 2, this.aabb.getCenter().y - height / 2, width, height);
 	}
 	
 	public AxisAlignedBoundingBox getAABB() {

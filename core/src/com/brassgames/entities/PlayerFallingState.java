@@ -10,11 +10,17 @@ import com.brassgames.utils.KeyboardListener;
 public class PlayerFallingState implements PlayerState {
 
 	private PlayerState subsequentState;
+	private int framesSinceLastPress;
+	private static final int FRAMES_TO_START_NEXT_JUMP = 5; // if player jumps within 5 frames of landing, subsequent state = jump
+	
+	public PlayerFallingState() {
+		this.framesSinceLastPress = 0;
+	}
 	
 	@Override
 	public void handleInput(float delta, Player player, KeyboardListener keyboard) {
 		if (keyboard.isKeyJustPressed(Input.Keys.SPACE) ) {
-			subsequentState = new PlayerJumpingState();
+			framesSinceLastPress = 0;
 		}
 		
 	}
@@ -22,6 +28,7 @@ public class PlayerFallingState implements PlayerState {
 	@Override
 	public void update(float delta, Player player, World world) {
 		// TODO Auto-generated method stub
+		framesSinceLastPress++;
 		player.setDy(player.getDy() + Constants.GRAVITY);
 		player.doWallSensorPhysics(delta);
 		Block collidedBlock = player.getDownCollidedBlock(world);
@@ -29,17 +36,18 @@ public class PlayerFallingState implements PlayerState {
 			float top = collidedBlock.getAABB().getCenter().y + collidedBlock.getAABB().getRadii().y;
 			player.getAABB().setCenter(new Vector2(player.getAABB().getCenter().x, top));
 			player.setDy(0);
-			System.out.println("Collided downwards");
-			if (subsequentState == null) {
+			if (framesSinceLastPress >= FRAMES_TO_START_NEXT_JUMP) {
 				player.setState(new PlayerOnGroundState());
 			} else {
-				player.setState(subsequentState);
+				player.setState(new PlayerJumpingState());
 			}
 		} 
 	}
 
 	@Override
 	public void enter(Player player) {
+		player.setDy(0);
+		System.out.println("Player started to fall");
 		// TODO Auto-generated method stub
 		
 	}

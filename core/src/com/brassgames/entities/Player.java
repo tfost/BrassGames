@@ -23,10 +23,10 @@ public class Player extends Entity {
 	private PlayerState state;
 	
 	// Wall sensors, to determine if we are moving into a wall or not. 
-	protected AxisAlignedBoundingBox wallAboveSensor;
-	protected AxisAlignedBoundingBox wallBelowSensor;
-	protected AxisAlignedBoundingBox wallLeftSensor;
-	protected AxisAlignedBoundingBox wallRightSensor;
+	private AxisAlignedBoundingBox wallAboveSensor;
+	private AxisAlignedBoundingBox wallBelowSensor;
+	private AxisAlignedBoundingBox wallLeftSensor;
+	private AxisAlignedBoundingBox wallRightSensor;
 	
 	//Graphics Variables
 	private Texture img;
@@ -49,10 +49,10 @@ public class Player extends Entity {
 		
 		//Wall Sensor Initialization
 		//Starts centereed around the character, but is fixed to be int he proper spot after UpdateWallSensors is called. 
-		this.wallBelowSensor = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH + 2, 2); //TODO: NO MAGIC NUMBERS
-		this.wallAboveSensor = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH + 2, 2);
-		this.wallRightSensor = new AxisAlignedBoundingBox(x, y, 2, Constants.PLAYER_HEIGHT + 2);
-		this.wallLeftSensor = new AxisAlignedBoundingBox(x, y, 2, Constants.PLAYER_HEIGHT + 2);
+		this.wallBelowSensor = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH + 2, 4); //TODO: NO MAGIC NUMBERS
+		this.wallAboveSensor = new AxisAlignedBoundingBox(x, y, Constants.PLAYER_WIDTH + 2, 4);
+		this.wallRightSensor = new AxisAlignedBoundingBox(x, y, 4, Constants.PLAYER_HEIGHT + 2);
+		this.wallLeftSensor = new AxisAlignedBoundingBox(x, y, 4, Constants.PLAYER_HEIGHT + 2);
 	    this.updateWallSensors(); //Set to right position
 		
 		//Ghost initialization
@@ -71,7 +71,14 @@ public class Player extends Entity {
 			this.setDx(this.getDx() - Constants.PLAYER_ACCELERATION);
 		} else if (keyboard.isKeyPressed(Input.Keys.D)) {
 			this.setDx(this.getDx() + Constants.PLAYER_ACCELERATION);
-		} else {
+		} else { // Slow down player if no button is pressed, or stop them if moving slow enough.
+			if (this.getDx() < -Constants.PLAYER_ACCELERATION) {
+				this.setDx(this.getDx() +  Constants.PLAYER_ACCELERATION);
+			} else if (this.getDx() > Constants.PLAYER_ACCELERATION) {
+				this.setDx(this.getDx() - Constants.PLAYER_ACCELERATION);
+			} else if (Math.abs(this.getDx()) < Constants.PLAYER_ACCELERATION) {
+				this.setDx(0);
+			}
 			this.dx = 0;
 		}
 	}
@@ -106,16 +113,17 @@ public class Player extends Entity {
 	}
 	
 	/**
-	 * Does doWall
+	 * Does Moves wall sensors to see where we would be if we applied physics as they are as of right now
+	 * Can be used to see if the player would collide if their velocities didn't change.
 	 * @param delta
 	 */
 	protected void doWallSensorPhysics(float delta) {
 		Vector2 vel = new Vector2(this.dx, this.dy);
 
-		//this.wallAboveSensor.setCenter(this.wallAboveSensor.getCenter().add(vel));
+		this.wallAboveSensor.setCenter(this.wallAboveSensor.getCenter().add(vel));
 		this.wallBelowSensor.setCenter(this.wallBelowSensor.getCenter().add(vel));
-		//this.wallLeftSensor.setCenter(this.wallLeftSensor.getCenter().add(vel));
-		//this.wallRightSensor.setCenter(this.wallRightSensor.getCenter().add(vel));
+		this.wallLeftSensor.setCenter(this.wallLeftSensor.getCenter().add(vel));
+		this.wallRightSensor.setCenter(this.wallRightSensor.getCenter().add(vel));
 
 	}
 	
@@ -124,12 +132,13 @@ public class Player extends Entity {
 	 * @param delta
 	 */
 	private void doPhysics(float delta) {
-
+		float prevX = this.getAABB().getCenter().x;
 		Vector2 vel = new Vector2();
 		vel.x = this.dx;
 		vel.y = this.dy;
 		
 		this.getAABB().setCenter(this.getAABB().getCenter().add(vel));
+		//System.out.println("x:" + (this.getAABB().getCenter().x - prevX));
 	}
 	
 	
@@ -139,7 +148,7 @@ public class Player extends Entity {
 		this.updateWallSensors();
 		this.handleInput(keyboard);
 		this.state.handleInput(delta, this, keyboard);
-
+		
 		this.state.update(delta, this, world);
 		this.doPhysics(delta);
 		

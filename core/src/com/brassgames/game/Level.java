@@ -31,11 +31,19 @@ public class Level {
 		this.ghosts = new ArrayList<Ghost>();
 	}
 	
-	public void update(float delta) {
+	public void handleInput() {
 		keyboard.poll();
 		if(keyboard.isKeyJustPressed(Input.Keys.K)) {
 			player.kill();
-		} if (player.isDead() && player.hasLanded()) {	//TODO: define this better
+		} 
+		if (keyboard.isKeyJustPressed(Input.Keys.P)) { // purge ghosts
+			ghosts.clear();
+		}
+	}
+	
+	public void update(float delta) {
+		this.handleInput();
+		if (player.isDead() && player.hasLanded()) {	//TODO: define this better
 			ghosts.add(player.toGhost());
 			System.out.println(" / " + player.frames);
 			for(Ghost g : ghosts) {
